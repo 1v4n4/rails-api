@@ -16,10 +16,12 @@ RSpec.describe Article, type: :model do
 
     it 'has an invalid title' do
       # article = build(:article, title: '')
-      expect(article_invalid).not_to be_valid
-      expect(article_invalid.errors[:title]).to include("can't be blank")
-      expect(article_invalid.errors[:content]).to include("can't be blank")
-      expect(article_invalid.errors[:slug]).to include("can't be blank")
+      aggregate_failures do
+        expect(article_invalid).not_to be_valid
+        expect(article_invalid.errors[:title]).to include("can't be blank")
+        expect(article_invalid.errors[:content]).to include("can't be blank")
+        expect(article_invalid.errors[:slug]).to include("can't be blank")
+      end
     end
 
     it 'has not an unique slug' do
