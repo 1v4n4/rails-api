@@ -2,7 +2,9 @@ require 'rails_helper'
 
 RSpec.describe Article, type: :model do
   describe '#validations' do
-    let(:article) { build(:article) }
+    let(:article) { create(:article) }
+    let(:article_invalid) { build(:article, title: '', content: '', slug: '') }
+    let(:article_slug_invalid) { build(:article, slug: article.slug)}
 
     it 'creates a valid article' do
       # article = Article.create({title: 'Article title', content: 'Article content'})
@@ -13,9 +15,19 @@ RSpec.describe Article, type: :model do
     end
 
     it 'has an invalid title' do
-      article = build(:article, title: '')
-      expect(article).not_to be_valid
-      expect(article.errors[:title]).to include("Can't be blank")
+      # article = build(:article, title: '')
+      expect(article_invalid).not_to be_valid
+      expect(article_invalid.errors[:title]).to include("can't be blank")
+      expect(article_invalid.errors[:content]).to include("can't be blank")
+      expect(article_invalid.errors[:slug]).to include("can't be blank")
+    end
+
+    it 'has not an unique slug' do
+      # article1 = create(:article)
+      # expect(article1).to be_valid
+      # article_slug_invalid = build(:article, slug: article1.slug)
+      expect(article_slug_invalid).not_to be_valid
+      expect(article_slug_invalid.errors[:slug]).to include('has already been taken')
     end
   end
 end
