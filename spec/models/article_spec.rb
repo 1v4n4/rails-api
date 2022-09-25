@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe Article, type: :model do
-  describe '#validations' do
+  describe '#validations' do  #instance method prefix #
     let(:article) { create(:article) }
     let(:article_invalid) { build(:article, title: '', content: '', slug: '') }
     let(:article_slug_invalid) { build(:article, slug: article.slug)}
@@ -30,6 +30,16 @@ RSpec.describe Article, type: :model do
       # article_slug_invalid = build(:article, slug: article1.slug)
       expect(article_slug_invalid).not_to be_valid
       expect(article_slug_invalid.errors[:slug]).to include('has already been taken')
+    end
+  end
+
+  describe '.recent' do # class method prefix .
+    it 'returns articles in descending order' do
+      article1 = create(:article, created_at: 1.hour.ago)
+      article2 = create(:article)
+      expect(described_class.recent).to eq([article2, article1])
+      article2.update_column(:created_at, 2.hour.ago)
+      expect(described_class.recent).to eq([article1, article2])
     end
   end
 end
